@@ -1,0 +1,11 @@
+{
+  "name": "easy-react",
+  "version": "1.0.0",
+  "description": "explain-me-like-i-am-five version of React (educational purposes only, obviously😁)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "LogiqueClergyman",
+  "license": "ISC"
+}
