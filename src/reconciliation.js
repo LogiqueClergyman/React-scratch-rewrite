@@ -1,6 +1,6 @@
 let deletions = null;
 
-export const reconciliation = (wipFiber, elements) => {
+const reconciliation = (wipFiber, elements) => {
   let prevSibling = null;
   let oldFiber = wipFiber.alternate && wipFiber.alternate.child;
 
@@ -41,3 +41,5 @@ export const reconciliation = (wipFiber, elements) => {
     prevSibling = newFiber;
   }
 };
+
+export { reconciliation };

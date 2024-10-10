@@ -2,7 +2,7 @@ let wipRoot = null;
 let nextFiber = null;
 let currentRoot = null;
 
-export const render = (element, container) => {
+const render = (element, container) => {
   wipRoot = {
     dom: container,
     props: {
@@ -75,3 +75,5 @@ const renderFibers = (fiber) => {
     nextFiber = nextFiber.parent;
   }
 };
+
+export { render };

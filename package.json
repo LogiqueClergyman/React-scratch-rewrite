@@ -4,8 +4,15 @@
   "description": "explain-me-like-i-am-five version of React (educational purposes only, obviously😁)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src index.js script.js --out-dir dist"
   },
   "author": "LogiqueClergyman",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.25.7",
+    "@babel/core": "^7.25.8",
+    "@babel/plugin-transform-react-jsx": "^7.25.7",
+    "@babel/preset-env": "^7.25.8"
+  }
 }

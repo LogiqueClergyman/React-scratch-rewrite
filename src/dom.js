@@ -1,4 +1,4 @@
-export const createDom = (fiber) => {
+const createDom = (fiber) => {
   const domNode =
     fiber.type === "TEXT"
       ? document.createTextNode("")
@@ -15,7 +15,7 @@ export const createDom = (fiber) => {
 const isEvent = (key) => key.startsWith("on");
 const isProperty = (key) => key !== "children" && !isEvent(key);
 
-export const updateDom = (dom, prevProps, nextProps) => {
+const updateDom = (dom, prevProps, nextProps) => {
   Object.keys(prevProps)
     .filter(isEvent)
     .filter((key) => !(key in nextProps) || prevProps[key] !== nextProps[key])
@@ -44,3 +44,5 @@ export const updateDom = (dom, prevProps, nextProps) => {
       dom.addEventListener(eventType, nextProps[name]);
     });
 };
+
+export { createDom, updateDom };
