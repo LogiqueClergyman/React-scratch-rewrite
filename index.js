@@ -106,17 +106,25 @@ const commitRoot = () => {
 
 const commitWork = (fiber) => {
   if (!fiber) return;
-  const parent = fiber.parent.dom;
+  let domParent = fiber.parent;
+  while (!domParent.dom) {
+    domParent = domParent.parent;
+  }
+  const parent = domParent.dom;
   parent.appendChild(fiber.dom);
   if (fiber.result === "INSERT" && fiber.dom != null)
     parent.appendChild(fiber.dom);
-  else if (fiber.result === "DELETE") parent.removeChild(fiber.dom);
+  else if (fiber.result === "DELETE") commitDelete(fiber, parent);
   else if (fiber.result === "UPDATE" && fiber.dom != null)
     updateDom(fiber.dom, fiber.alternate.props, fiber.props);
   commitWork(fiber.child);
   commitWork(fiber.sibling);
 };
 
+const commitDelete = (fiber, parent) => {
+  if (fiber.dom) parent.removeChild(fiber.dom);
+  else commitDelete(fiber.child, parent);
+};
 const reconcilation = (wipFiber, elements) => {
   let prevSibling = null;
   let oldFiber = wipFiber.alternate && wipFiber.alternate.child;
@@ -193,4 +201,14 @@ const updateDom = (dom, prevProps, nextProps) => {
       const eventType = name.toLowerCase().substring(2);
       dom.addEventListener(eventType, nextProps[name]);
     });
+};
+
+const updateFunctionComponent = (fiber) => {
+  const children = [fiber.type(fiber.props)];
+  reconcilation(fiber, children);
+};
+
+const updateHostComponent = (fiber) => {
+  if (!fiber.dom) fiber.dom = createDom(fiber);
+  reconcilation(fiber, fiber.props.children);
 };
