@@ -1,6 +1,13 @@
-let wipFiber = null;
-let hookIndex = null;
-
+import {
+  wipRoot,
+  setWipRoot,
+  clearDeletions,
+  setNextRender,
+  wipFiber,
+  hookIndex,
+  setHookIndex,
+  currentRoot,
+} from "./global.js";
 const useState = (initial) => {
   const oldHook =
     wipFiber.alternate &&
@@ -14,13 +21,13 @@ const useState = (initial) => {
 
   const setState = (action) => {
     hook.queue.push(action);
-    wipRoot = {
+    setWipRoot({
       dom: currentRoot.dom,
       props: currentRoot.props,
       alternate: currentRoot,
-    };
-    nextFiber = wipRoot;
-    deletions = [];
+    });
+    setNextRender(wipRoot);
+    clearDeletions();
   };
 
   (oldHook ? oldHook.queue : []).forEach((action) => {
@@ -28,7 +35,7 @@ const useState = (initial) => {
   });
 
   wipFiber.hooks.push(hook);
-  hookIndex++;
+  setHookIndex(hookIndex + 1);
   return [hook.state, setState];
 };
 

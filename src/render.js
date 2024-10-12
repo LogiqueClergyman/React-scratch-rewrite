@@ -1,27 +1,39 @@
-let wipRoot = null;
-let nextFiber = null;
-let currentRoot = null;
+import {
+  wipRoot,
+  wipFiber,
+  nextRender,
+  currentRoot,
+  deletions,
+  setWipRoot,
+  clearDeletions,
+  setNextRender,
+  setWipFiber,
+  setCurrentRoot,
+  setHookIndex,
+} from "./global.js";
 
+import { reconciliation } from "./reconciliation.js";
+import { createDom, updateDom } from "./dom.js";
 const render = (element, container) => {
-  wipRoot = {
+  setWipRoot({
     dom: container,
     props: {
       children: [element],
     },
     alternate: currentRoot,
-  };
-  deletions = [];
-  nextFiber = wipRoot;
+  });
+  clearDeletions();
+  setNextRender(wipRoot);
 };
 
 const workloop = (deadline) => {
   let shouldYield = false;
-  while (nextFiber && !shouldYield) {
-    nextFiber = renderFibers(nextFiber);
+  while (nextRender && !shouldYield) {
+    setNextRender(renderFibers(nextRender));
     shouldYield = deadline.timeRemaining() < 1;
   }
 
-  if (!nextFiber && wipRoot) commitRoot();
+  if (!nextRender && wipRoot) commitRoot();
   requestIdleCallback(workloop);
 };
 
@@ -30,8 +42,8 @@ requestIdleCallback(workloop);
 const commitRoot = () => {
   deletions.forEach(commitWork);
   commitWork(wipRoot.child);
-  currentRoot = wipRoot;
-  wipRoot = null;
+  setCurrentRoot(wipRoot);
+  setWipRoot(null);
 };
 
 const commitWork = (fiber) => {
@@ -56,13 +68,12 @@ const commitWork = (fiber) => {
 };
 
 const renderFibers = (fiber) => {
-  // Create this new node
-  if (!fiber.dom) {
-    fiber.dom = createDom(fiber);
+  const isFunctionComponent = fiber.type instanceof Function;
+  if (isFunctionComponent) {
+    updateFunctionComponent(fiber);
+  } else {
+    updateHostComponent(fiber);
   }
-  // Get all the children
-  const elements = fiber.props.children;
-  reconciliation(fiber, elements);
 
   // First render the child
   if (fiber.child) return fiber.child;
@@ -76,4 +87,18 @@ const renderFibers = (fiber) => {
   }
 };
 
+const updateFunctionComponent = (fiber) => {
+  setWipFiber(fiber);
+  setHookIndex(0);
+  wipFiber.hooks = [];
+  const children = [fiber.type(fiber.props)];
+  reconciliation(fiber, children);
+};
+
+const updateHostComponent = (fiber) => {
+  if (!fiber.dom) {
+    fiber.dom = createDom(fiber);
+  }
+  reconciliation(fiber, fiber.props.children);
+};
 export { render };

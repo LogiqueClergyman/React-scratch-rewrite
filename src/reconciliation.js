@@ -1,4 +1,4 @@
-let deletions = null;
+import { pushToDeletions } from "./global.js";
 
 const reconciliation = (wipFiber, elements) => {
   let prevSibling = null;
@@ -31,7 +31,7 @@ const reconciliation = (wipFiber, elements) => {
       }
       if (oldFiber) {
         oldFiber.result = "DELETE";
-        deletions.push(oldFiber);
+        pushToDeletions(oldFiber);
       }
     }
 

@@ -3,11 +3,11 @@ const createDom = (fiber) => {
     fiber.type === "TEXT"
       ? document.createTextNode("")
       : document.createElement(fiber.type);
-
-  const isProperty = (key) => key !== "children";
-  Object.keys(fiber.props)
-    .filter(isProperty)
-    .forEach((name) => (domNode[name] = fiber.props[name]));
+  updateDom(domNode, {}, fiber.props);
+  // const isProperty = (key) => key !== "children";
+  // Object.keys(fiber.props)
+  //   .filter(isProperty)
+  //   .forEach((name) => (domNode[name] = fiber.props[name]));
 
   return domNode;
 };

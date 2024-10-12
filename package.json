@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel src index.js script.js --out-dir dist"
+    "build": "babel src --out-dir dist"
   },
   "author": "LogiqueClergyman",
   "license": "ISC",
