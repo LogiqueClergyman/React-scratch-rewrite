@@ -65,6 +65,17 @@ const commitWork = (fiber) => {
 
   commitWork(fiber.child);
   commitWork(fiber.sibling);
+
+  // Run the effects after committing
+  if (fiber.effects) {
+    fiber.effects.forEach((hook) => {
+      // Clean up the previous effect, if it exists
+      if (hook.cleanup) hook.cleanup();
+      // Run the new effect and store the cleanup function
+      const cleanup = hook.effect();
+      hook.cleanup = typeof cleanup === "function" ? cleanup : null;
+    });
+  }
 };
 
 const renderFibers = (fiber) => {
@@ -91,6 +102,7 @@ const updateFunctionComponent = (fiber) => {
   setWipFiber(fiber);
   setHookIndex(0);
   wipFiber.hooks = [];
+  wipFiber.effects = [];
   const children = [fiber.type(fiber.props)];
   reconciliation(fiber, children);
 };

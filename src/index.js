@@ -1,7 +1,7 @@
 import { createNewElement } from "./createElement.js";
 import { render } from "./render.js";
-import { useState } from "./hooks.js";
+import { useState, useEffect } from "./hooks.js";
 
-const easyReact = { createElement: createNewElement, render, useState };
+const easyReact = { createElement: createNewElement, render, useState, useEffect };
 
 export { easyReact };
