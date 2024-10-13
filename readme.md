@@ -7,7 +7,7 @@
 
 ---
 
-<p align="center"> A rewrite of all popular features of the one and only ReactJS. 
+<p align="center"> A rewrite of the core functionalities of ReactJS. 
     <br> 
 </p>
 
